@@ -21,5 +21,5 @@ app.get("/", (req, res) => res.send("API Is Working!!"));
 app.use("/api/auth", authRouters)
 
 app.listen(port, () => {
-    console.log(`Server is running on PORT ${port}`);
+    console.log(`Server is running on PORT http://localhost:${port}`);
 });
