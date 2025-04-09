@@ -140,14 +140,12 @@ export const sendVerifyOtp = async (req, res) => {
     }
 
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    console.log("Generated OTP:", otp);
 
     user.sendVerifyOtp = otp;
     user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
 
-    console.log("Before Saving User:", user);
     await user.save();
-    console.log("After Saving User:", await userModel.findById(userId));
+    // console.log("After Saving User:", await userModel.findById(userId));
 
     // Send OTP email
     const mailOption = {
@@ -210,3 +208,107 @@ export const isAuthenticated = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// password reset
+
+export const sendResetOtp = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({
+      success: false,
+      massage: "email Is Required",
+    });
+  }
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({
+        success: false,
+        massage: "User Not Found",
+      });
+    }
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+    user.resetOtp = otp;
+    user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000;
+
+    await user.save();
+
+    // Send OTP email
+    const mailOption = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for resetting your password is ${otp}
+        Use this OTP to proceed with resetting your password.`,
+    };
+    await transporter.sendMail(mailOption);
+
+    res.json({ success: true, message: "OTP Send To Your Email" });
+  } catch (error) {
+    return res.json({
+      success: false,
+      massage: error.massage,
+    });
+  }
+};
+
+
+// reset user password 
+export const resetPassword  = async (req, res) => {
+
+  const {email, otp, newPassword} = req.body;
+  console.log("Request Body:", req.body);
+
+
+  if(!email || !otp || !newPassword){
+    return res.json({
+      success: false,
+      massage : "Email, Otp and NewPassword Is Requred"
+    })
+  }
+
+  try {
+    const user = await userModel.findOne({email});
+
+    if(!user){
+      return  res.json({
+        success: false,
+        massage : "User Not Found."
+      })
+    }
+    if(user.resetOtp == "" || user.resetOtp !== otp){
+      return res.json({
+         success: false,
+        massage : "Invalid OTP."
+      })
+    }
+    if(user.resetOtpExpireAt < Date.now()){
+      return res.json({
+        success: false,
+       massage : "OTP Expired"
+     })
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10)
+
+    user.password = hashPassword;
+    user.resetOtp = "";
+    user.resetOtpExpireAt = "";
+    await user.save();
+
+    return res.json({
+        success: true,
+       massage : "Password has been reset successfully"
+    })
+
+
+  } catch (error) {
+    return res.json({
+      success: false,
+      massage: error.massage,
+    })
+  }
+}
