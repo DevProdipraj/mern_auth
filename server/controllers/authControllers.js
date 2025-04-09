@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 import userModel from "../models/userModel.js";
-import { transporter} from "../config/nodeMailer.js";
+import { transporter } from "../config/nodeMailer.js";
 
 export const register = async (req, res) => {
   try {
@@ -40,17 +40,15 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // send welcome  email 
+    // send welcome  email
     const mailOption = {
       from: process.env.SENDER_EMAIL,
       to: email,
       subject: "Welcome to Our Website",
-      text: `Welcome to Our Website Your Account Has been Creates with using this email ${email}` 
-
-    }
+      text: `Welcome to Our Website Your Account Has been Creates with using this email ${email}`,
+    };
     await transporter.sendMail(mailOption);
-     res.json({ success: true, message: "User Registered Successfully" });
-
+    res.json({ success: true, message: "User Registered Successfully" });
   } catch (error) {
     return res.json({
       success: false,
@@ -100,7 +98,6 @@ export const login = async (req, res) => {
     });
 
     return res.json({ success: true, message: "Login Successful" });
-
   } catch (error) {
     return res.json({
       success: false,
@@ -121,7 +118,6 @@ export const logout = async (req, res) => {
       success: true,
       message: "Logout Successful",
     });
-
   } catch (error) {
     return res.json({
       success: false,
@@ -129,7 +125,6 @@ export const logout = async (req, res) => {
     });
   }
 };
- 
 
 export const sendVerifyOtp = async (req, res) => {
   try {
@@ -159,22 +154,18 @@ export const sendVerifyOtp = async (req, res) => {
       from: process.env.SENDER_EMAIL,
       to: user.email,
       subject: "Account Verification OTP",
-      text: `Your OTP is ${otp}. Verify your account using this OTP.`
+      text: `Your OTP is ${otp}. Verify your account using this OTP.`,
     };
 
     await transporter.sendMail(mailOption);
     res.json({ success: true, message: "Verification OTP sent to email" });
-
   } catch (error) {
     console.error("Error in sendVerifyOtp:", error);
     res.json({ success: false, message: error.message });
   }
 };
 
-
- 
-
-export const verifyEmail = async (req, res) => { 
+export const verifyEmail = async (req, res) => {
   try {
     const { userId, otp } = req.body;
 
@@ -202,17 +193,20 @@ export const verifyEmail = async (req, res) => {
     await userModel.findByIdAndUpdate(userId, {
       isAccountVirefy: true,
       sendVerifyOtp: "",
-      verifyOtpExpireAt: 0
+      verifyOtpExpireAt: 0,
     });
 
     return res.json({ success: true, message: "Email Verified Successfully" });
-
   } catch (error) {
     console.error("Error in verifyEmail:", error);
     return res.json({ success: false, message: error.message });
   }
 };
 
-
-
-
+export const isAuthenticated = async (req, res) => {
+  try {
+    return res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
