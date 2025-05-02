@@ -3,18 +3,18 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
-  virefyOtp: {
+  verifyOtp: {
     type: String,
     default: "",
   },
@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
   isAccountVirefy: {
     type: Boolean,
     default: false,
@@ -40,6 +41,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const userModel = mongoose.models.user || mongoose.model("user", userSchema);
+const userModel = mongoose.models?.user || mongoose.model("user", userSchema);
 
 export default userModel;
