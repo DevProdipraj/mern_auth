@@ -21,7 +21,7 @@ const Login = () => {
     axios.defaults.withCredentials = true;
 
     try {
-      if (state === "Sign up") {
+      if (state === "sign up") {
         axios.defaults.withCredentials = true;
         const { data } = await axios.post(backendUrl + "/api/auth/register", {
           name,
