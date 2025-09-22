@@ -132,7 +132,7 @@ const Login = () => {
               <p className="my-4 text-sm">
                 Don't hav an account?{" "}
                 <span
-                  onClick={() => setState("signup")}
+                  onClick={() => setState("sign up")}
                   className="text-blue-400 cursor-pointer"
                 >
                   Sign Up

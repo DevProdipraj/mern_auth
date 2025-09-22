@@ -15,11 +15,18 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 
- 
+ app.use(cors({
+  origin: (origin, callback) => {
+    callback(null, origin || '*'); 
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "*" ,credentials: true }));
+
+
 
 app.get("/", (req, res) => res.send("API Is Working!!"));
 app.use("/api/auth", authRouters)
