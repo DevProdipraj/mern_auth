@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export const appContent = createContext()
@@ -13,17 +13,17 @@ export const AppContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true
 
  
-  const getAuthState = async () => {
-    try {
-      const {data} = await axios.get(backendUrl + "/api/auth/is-auth")
-      if(data.success){
-        setIsLoggedIn(true)
-        getUserData()
-      }
-    } catch (error) {
-      toast.error(error.message)
-    }
-  }
+  // const getAuthState = async () => {
+  //   try {
+  //     const {data} = await axios.get(backendUrl + "/api/auth/is-auth")
+  //     if(data.success){
+  //       setIsLoggedIn(true)
+  //       getUserData()
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message)
+  //   }
+  // }
 
 
   const getUserData = async () => {
@@ -36,9 +36,9 @@ export const AppContextProvider = ({ children }) => {
     }
   }
 
-useEffect(() => {
-  getAuthState()
-},[])
+// useEffect(() => {
+//   getAuthState()
+// },[])
 
   const value = {
     backendUrl,

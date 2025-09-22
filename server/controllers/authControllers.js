@@ -161,7 +161,7 @@ export const sendVerifyOtp = async (req, res) => {
     await transporter.sendMail(mailOption);
     res.json({ success: true, message: "Verification OTP sent to email" });
   } catch (error) {
-    console.error("Error in sendVerifyOtp:", error);
+   
     res.json({ success: false, message: error.message });
   }
 };
@@ -180,7 +180,7 @@ export const verifyEmail = async (req, res) => {
       return res.json({ success: false, message: "User Not Found" });
     }
 
-    console.log("Stored OTP:", user.sendVerifyOtp, "Received OTP:", otp);
+    // console.log("Stored OTP:", user.sendVerifyOtp, "Received OTP:", otp);
 
     if (!user.sendVerifyOtp || String(user.sendVerifyOtp) !== String(otp)) {
       return res.json({ success: false, message: "Invalid OTP" });
