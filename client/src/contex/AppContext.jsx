@@ -40,7 +40,9 @@ export const AppContextProvider = ({ children }) => {
   // Get logged in user data
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/user/data`);
+      const { data } = await axios.get(`${backendUrl}/api/user/data`, {
+        withCredentials: true
+      });
 
       if (data.success) {
         setUserData(data.userData);
