@@ -8,7 +8,7 @@ import axios from "axios";
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const { userData, backendUrl, setIsLoggedIn, setUserData } =
+  const { userData, backendUrl, logout: logoutFromContext } =
     useContext(AppContent);
 
   const sendVerificationOtp = async () => {
@@ -31,15 +31,9 @@ const Navbar = () => {
 
 
   const logout = async () => {
-    try {
-      axios.defaults.withCredentials = true;
-      const { data } = await axios.post(backendUrl + "/api/auth/logout");
-
-      data.success && setIsLoggedIn(false);
-      data.success && setUserData(false);
-      navigate("/")
-    } catch (error) {
-      toast.error(error.message);
+    const success = await logoutFromContext();
+    if (success) {
+      navigate("/");
     }
   };
 

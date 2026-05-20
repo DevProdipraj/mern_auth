@@ -34,12 +34,13 @@ const Login = () => {
         );
 
         if (data.success) {
-          setIsLoggedIn(true);
+          localStorage.setItem("token", data.token);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
+          setIsLoggedIn(true);
           await getUserData();
 
           toast.success("Account created successfully");
-
           navigate("/");
         } else {
           toast.error(data.message);
@@ -54,12 +55,13 @@ const Login = () => {
         );
 
         if (data.success) {
-          setIsLoggedIn(true);
+          localStorage.setItem("token", data.token);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
+          setIsLoggedIn(true);
           await getUserData();
 
           toast.success("Login successful");
-
           navigate("/");
         } else {
           toast.error(data.message);

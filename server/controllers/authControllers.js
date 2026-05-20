@@ -65,6 +65,7 @@ export const register = async (req, res) => {
     return res.json({
       success: true,
       message: "User Registered Successfully",
+      token,
       user
     });
   } catch (error) {
@@ -116,7 +117,7 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ success: true, message: "Login Successful" });
+    return res.json({ success: true, message: "Login Successful", token });
   } catch (error) {
     return res.json({
       success: false,
@@ -222,7 +223,13 @@ export const verifyEmail = async (req, res) => {
 
 export const isAuthenticated = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
+
+    // Fallback: check Authorization header
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+
     if (!token) {
       return res.json({ success: false, message: "Not Authorized. Login Again." });
     }

@@ -4,6 +4,12 @@ import { toast } from "react-toastify";
 
 axios.defaults.withCredentials = true;
 
+// Initialize token on load
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
 export const AppContent = createContext();
 
 export const AppContextProvider = ({ children }) => {
@@ -54,6 +60,25 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // Unified logout function
+  const logout = async () => {
+    try {
+      const { data } = await axios.post(`${backendUrl}/api/auth/logout`);
+
+      if (data.success) {
+        setIsLoggedIn(false);
+        setUserData(null);
+        localStorage.removeItem("token");
+        delete axios.defaults.headers.common["Authorization"];
+        return true;
+      }
+      return false;
+    } catch (error) {
+      toast.error(error.message);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!backendUrl) {
       console.error("VITE_BACKEND_URL is missing");
@@ -70,7 +95,9 @@ export const AppContextProvider = ({ children }) => {
     userData,
     setUserData,
     getUserData,
+    logout,
   };
 
   return <AppContent.Provider value={value}>{children}</AppContent.Provider>;
 };
+
