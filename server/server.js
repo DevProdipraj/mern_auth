@@ -24,9 +24,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [
+      "https://mern-auth-one-chi.vercel.app",
+      "https://mern-auth-azvl.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ];
+
 app.use(
   cors({
-    origin: "https://mern-auth-azvl.vercel.app",
+    origin: allowedOrigins,
     credentials: true,
   })
 );

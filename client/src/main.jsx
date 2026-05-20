@@ -3,7 +3,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { AppContextProvider } from "./contex/AppContext.jsx";
-import { axios } from "axios";
+import axios from "axios";
 
 
 
